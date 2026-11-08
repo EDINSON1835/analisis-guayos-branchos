@@ -4,6 +4,7 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 110
+extend-exclude = ["notebooks"]
 src = ["src", "tests", "scripts"]
 
 [tool.ruff.lint]
