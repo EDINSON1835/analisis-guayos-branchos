@@ -12,7 +12,7 @@ CASOS = {
     "ld_visible_e_insignia": (
         f'<head>{LD}<style>.a{{margin-left:-2%}}</style></head><body><h1>Fila Guayos Ria Fg Hombre Negro</h1>'
         "<span>-40%</span><p>Referencia: 61272</p><s>$ 199.000,00</s><b>$ 119.200,00</b></body>",
-        (199000, 119200, 41),
+        (199000, 119200, 40),
     ),
     "ld_lista_solo_en_json_de_estado": (
         f'<head>{LD}<script>var __STATE__={{"ListPrice":199000,"Price":119200}}</script></head>'
