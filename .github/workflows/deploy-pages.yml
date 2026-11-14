@@ -1,0 +1,54 @@
+name: Despliegue en GitHub Pages
+
+# Despliegue continuo: cada cambio que llega a main (y pasa las pruebas) publica el informe web.
+on:
+  push:
+    branches: [main]
+    paths: ["src/**", "scripts/**", "data/**", ".github/workflows/deploy-pages.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  construir:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements-dev.txt
+
+      - name: Instalar dependencias
+        run: pip install -r requirements-dev.txt
+
+      - name: Pruebas (el despliegue no continúa si fallan)
+        run: pytest -q
+
+      - name: Construir el informe web desde el CSV
+        run: python scripts/build_site.py --entrada data/dataset_guayos_selenium.csv --salida site
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+  desplegar:
+    needs: construir
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.despliegue.outputs.page_url }}
+    steps:
+      - id: despliegue
+        uses: actions/deploy-pages@v4
